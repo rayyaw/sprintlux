@@ -4,6 +4,7 @@ gradle
 gradlew
 gradlew.bat
 .gitattributes
+.idea
 
 # Ignore Gradle build output directory
 build

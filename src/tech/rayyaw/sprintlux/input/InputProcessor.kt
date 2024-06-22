@@ -6,6 +6,6 @@ public interface InputProcessor {
     fun startPolling()
     fun stopPolling()
 
-    //val globalHotkeysEnabled: MutableStateFlow<Boolean>
-    //val splitHotkeyState: MutableStateFlow<InputState>
+    fun registerDelegate(delegate: InputDelegate)
+    fun deregisterDelegate(delegate: InputDelegate)
 }
