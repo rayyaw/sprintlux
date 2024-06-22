@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "sprintlux"
-include("app")
+include("src")

@@ -9,6 +9,8 @@ plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.jvm)
 
+    id("org.openjfx.javafxplugin") version "0.1.0"
+
     // Apply the application plugin to add support for building a CLI application in Java.
     application
 }
@@ -19,13 +21,20 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation(libs.junit.jupiter)
-
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
     // This dependency is used by the application.
     implementation(libs.guava)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+
+    // GUI
+    implementation("org.openjfx:javafx-controls:16")
+    implementation("org.openjfx:javafx-fxml:16")
+
+    // Logging
+    implementation("org.slf4j:slf4j-api:1.7.32")
+    implementation("ch.qos.logback:logback-classic:1.5.6")
+
+    // Injection
+    implementation("com.google.inject:guice:5.0.1")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -35,12 +44,22 @@ java {
     }
 }
 
+javafx {
+    modules("javafx.controls", "javafx.fxml")
+}
+
+javafx {
+    version = "21"
+    modules("javafx.controls", "javafx.fxml")
+}
+
 application {
     // Define the main class for the application.
     mainClass = "tech.rayyaw.sprintlux.AppKt"
 }
 
-tasks.named<Test>("test") {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
+sourceSets {
+    main {
+        kotlin.srcDirs("src")
+    }
 }
