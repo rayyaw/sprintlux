@@ -1,5 +1,6 @@
 package tech.rayyaw.sprintlux
 
+import com.google.gson.Gson
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Scopes
@@ -11,6 +12,9 @@ import org.slf4j.LoggerFactory
 import tech.rayyaw.sprintlux.input.InputProcessor
 import tech.rayyaw.sprintlux.input.DevInputProcessor
 
+
+// Top level Guice module for the project.
+// Handles all dependency injection.
 class AppModule: AbstractModule() {
     override fun configure() {
         bind(InputProcessor::class.java).to(DevInputProcessor::class.java).`in`(Scopes.SINGLETON)
@@ -26,5 +30,11 @@ class AppModule: AbstractModule() {
     @Singleton
     fun providesCoroutineScope(): CoroutineScope {
         return CoroutineScope(Dispatchers.Default)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGson(): Gson {
+        return Gson()
     }
 }

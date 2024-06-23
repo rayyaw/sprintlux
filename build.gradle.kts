@@ -29,6 +29,9 @@ dependencies {
     implementation("org.openjfx:javafx-controls:16")
     implementation("org.openjfx:javafx-fxml:16")
 
+    // File Parsing
+    implementation("com.google.code.gson:gson:2.11.0")
+
     // Logging
     implementation("org.slf4j:slf4j-api:1.7.32")
     implementation("ch.qos.logback:logback-classic:1.5.6")

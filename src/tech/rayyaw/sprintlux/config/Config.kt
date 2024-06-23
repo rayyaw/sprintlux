@@ -2,6 +2,7 @@ package tech.rayyaw.sprintlux.config
 
 import java.nio.ByteOrder
 
+// TODO: Migrate a bunch of this stuff to layout files
 object Config {
     // Global hotkeys
     const val GLOBAL_HOTKEY_BUTTON:   String = "Grave"
@@ -16,10 +17,22 @@ object Config {
     const val INPUT_EVENT_STRUCT_SIZE: Int = 24
     val EV_KEY_C_STRUCT_VALUE: UShort = 1.toUShort() // C enum value corresponding to a key press
     val SYSTEM_ENDIANNESS: ByteOrder = ByteOrder.LITTLE_ENDIAN
+
+    // Layout settings
+    const val LAUNCH_WIDTH: Double                  = 200.0
+    const val SPLIT_HORIZONTAL_SPACING: Double      = 10.0
+    const val BACKGROUND_COLOR: String              = "(100, 100, 100)"
+    const val FONT_COLOR: String                    = "(255, 255, 255)"
+
+    // User defined files
+    const val SPLIT_FILE: String = "res/example.json"
+    const val STYLESHEET: String = "res/style.css"
 }
 
+// You shouldn't need to modify this
+// unless you notice key presses are registering with incorrect codes
+// or keys aren't mapped
 object LinuxKeyMappings {
-    // Add more as needed
     val mappings = mapOf(
         "Esc" to 1,
         "N1" to 2,
