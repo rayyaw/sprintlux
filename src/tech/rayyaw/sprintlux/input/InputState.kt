@@ -6,4 +6,5 @@ enum class InputState {
     UNDO_SPLIT,
     RESET,
     GLOBAL_HOTKEY_TOGGLE,
+    NONE,
 }

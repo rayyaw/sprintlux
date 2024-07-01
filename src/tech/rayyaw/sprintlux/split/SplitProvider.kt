@@ -1,11 +1,13 @@
 package tech.rayyaw.sprintlux.split
 
 import com.google.gson.Gson
+import com.google.inject.Singleton
 import javax.inject.Inject
 import java.io.File
 import tech.rayyaw.sprintlux.config.Config
 import kotlinx.coroutines.flow.MutableStateFlow
 
+@Singleton
 class SplitProvider @Inject constructor(
     private val jsonParser: Gson,
 ) {

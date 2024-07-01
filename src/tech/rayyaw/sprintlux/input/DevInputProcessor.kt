@@ -30,8 +30,7 @@ public class DevInputProcessor @Inject constructor(
         const val KEY_PRESSED_VALUE = 1
     }
 
-    // Input delegates are listening for input, and will receive a callback on split events
-    private val inputDelegates: MutableList<InputDelegate> = mutableListOf()
+    override val event = MutableStateFlow(InputState.NONE)
 
     private lateinit var inputStream: FileInputStream
     private lateinit var inputChannel: FileChannel
@@ -84,21 +83,10 @@ public class DevInputProcessor @Inject constructor(
             logger.debug("Read $bytesRead raw bytes from /dev/input: $byteArray")
             logger.debug("The ${keypressType} key was pressed")
 
-            // Notify delegates
+            // Notify listeners
             keypressType?.let { keypress ->
-                inputDelegates.map { delegate ->
-                    delegate.onInputChanged(keypress)
-                }
+                event.value = keypress
             }
         }
     }
-
-    override fun registerDelegate(delegate: InputDelegate) {
-        inputDelegates.add(delegate)
-    }
-
-    override fun deregisterDelegate(delegate: InputDelegate) {
-        inputDelegates.remove(delegate)
-    }
-    
 }

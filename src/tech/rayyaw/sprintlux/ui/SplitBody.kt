@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox
 import javafx.geometry.Pos
 import org.slf4j.Logger
 import tech.rayyaw.sprintlux.config.Config
+import tech.rayyaw.sprintlux.split.SplitFile
 import tech.rayyaw.sprintlux.split.SplitProvider
 import tech.rayyaw.sprintlux.util.DurationFormatter
 
@@ -20,10 +21,15 @@ class SplitBody @Inject constructor(
     private val splitProvider: SplitProvider,
     private val logger: Logger,
 ): VBox() {
-    init {
-        val splits = splitProvider.splitFile.value
 
-        val guiSplits = splits.splits.map {
+    private val splits: SplitFile
+    private val guiSplits: List<HBox>
+
+    init {
+        splits = splitProvider.splitFile.value
+
+        // FIXME - update when new deltas are available
+        guiSplits = splits.splits.map {
             val splitDisplayer = HBox()
             val splitName = Label(it.splitName)
 
