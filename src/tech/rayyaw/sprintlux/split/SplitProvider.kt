@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.inject.Singleton
 import javax.inject.Inject
 import java.io.File
+import java.io.FileWriter
 import tech.rayyaw.sprintlux.config.Config
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -11,14 +12,26 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class SplitProvider @Inject constructor(
     private val jsonParser: Gson,
 ) {
-    val splitFile: MutableStateFlow<SplitFile>
+    val splitFile: MutableStateFlow<SplitFile?> = MutableStateFlow(null)
 
     init {
-        // TODO: This needs to be configurable
-        val fileData = File(Config.SPLIT_FILE).readText()
-        splitFile = MutableStateFlow(
-            jsonParser.fromJson(fileData, SplitFile::class.java)
-        ) 
+        load(Config.SPLIT_FILE)
+    }
+
+    fun load(splitFile: String) {
+        val fileData = File(splitFile).readText()
+        this.splitFile.value = jsonParser.fromJson(
+            fileData, SplitFile::class.java
+        )
+    }
+
+    fun save(splitFile: String) {
+        this.splitFile.value?.let { splits ->
+            val data = jsonParser.toJson(splits)
+            FileWriter(splitFile).use { fileWriter ->
+                fileWriter.write(data)
+            }
+        }
     }
 
 }

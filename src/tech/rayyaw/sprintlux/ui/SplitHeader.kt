@@ -15,11 +15,14 @@ class SplitHeader @Inject constructor(
     init {
         val splits = splitProvider.splitFile.value
 
-        val titleLabel = Label(splits.gameName)
-        val subtitleLabel = Label(splits.categoryName)
+        // FIXME - this needs to update dynamically
+        splits?.let {
+            val titleLabel = Label(splits.gameName)
+            val subtitleLabel = Label(splits.categoryName)
 
-        alignment = Pos.CENTER
+            alignment = Pos.CENTER
 
-        children.addAll(titleLabel, subtitleLabel)
+            children.addAll(titleLabel, subtitleLabel)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package tech.rayyaw.sprintlux
 
+import com.google.gson.GsonBuilder
 import com.google.gson.Gson
 import com.google.inject.AbstractModule
 import com.google.inject.name.Named
@@ -47,6 +48,6 @@ class AppModule: AbstractModule() {
     @Provides
     @Singleton
     fun providesGson(): Gson {
-        return Gson()
+        return GsonBuilder().setPrettyPrinting().create()
     }
 }

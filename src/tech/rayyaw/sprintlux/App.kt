@@ -46,7 +46,7 @@ class Main: Application() {
     @Inject @Named("startTime") lateinit var startTime: MutableStateFlow<Instant?>
     var lastSplitTime:      Instant? = null
     var currentSplit:       Int = 0
-    var splitData:          MutableStateFlow<SplitFile>
+    var splitData:          MutableStateFlow<SplitFile?>
 
     init {
         val injector = Guice.createInjector(AppModule())
@@ -98,8 +98,10 @@ class Main: Application() {
     }
 
     override fun stop() {
-        // FIXME - auto-save split file on closure
         inputProcessor.stopPolling()
+
+        // FIXME - move this value elsewhere
+        splitProvider.save(Config.SPLIT_FILE)
     }
 
     // Callbacks and split updates
@@ -116,8 +118,13 @@ class Main: Application() {
     fun split() {
         val currentTime = Instant.now()
 
+        // Handle the first split
         if (startTime.value == null) {
             startTime.value = currentTime
+
+            val splits = splitProvider.splitFile            
+            splits.value?.incrementAttemptCounter()
+            attemptCounter.notifyNewAttemptCount()
         }
 
         lastSplitTime = currentTime

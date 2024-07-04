@@ -25,16 +25,21 @@ class SumOfBest @Inject constructor(
         val spacer = Region()
         HBox.setHgrow(spacer, Priority.ALWAYS)
 
-        val sobTime = splitProvider.splitFile.value.splits.map {
-            it.goldTimeMillis
-        }.sum()
+        val splits = splitProvider.splitFile.value
 
-        val sobTimeLabel = Label(
-            DurationFormatter.formatDuration(
-                Duration.ofMillis(sobTime)
+        // FIXME - update dynamically
+        splits?.let {
+            val sobTime = splits.splits.map {
+                it.goldTimeMillis
+            }.sum()
+
+            val sobTimeLabel = Label(
+                DurationFormatter.formatDuration(
+                    Duration.ofMillis(sobTime)
+                )
             )
-        )
 
-        children.addAll(sobText, spacer, sobTimeLabel)
+            children.addAll(sobText, spacer, sobTimeLabel)
+        }
     }
 }

@@ -22,14 +22,15 @@ class SplitBody @Inject constructor(
     private val logger: Logger,
 ): VBox() {
 
-    private val splits: SplitFile
-    private val guiSplits: List<HBox>
+    private val splits: SplitFile?
+    private val guiSplits: List<HBox>?
 
     init {
         splits = splitProvider.splitFile.value
 
         // FIXME - update when new deltas are available
-        guiSplits = splits.splits.map {
+        // and when split file changes
+        guiSplits = splits?.splits?.map {
             val splitDisplayer = HBox()
             val splitName = Label(it.splitName)
 
@@ -58,6 +59,8 @@ class SplitBody @Inject constructor(
             splitDisplayer
         }
 
-        children.addAll(guiSplits)
+        guiSplits?.let {
+            children.addAll(guiSplits)
+        }
     }
 }

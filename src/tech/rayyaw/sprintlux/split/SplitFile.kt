@@ -1,19 +1,27 @@
 package tech.rayyaw.sprintlux.split
 
+import com.google.gson.annotations.Expose
+
 data class SplitFile(
     val gameName: String,
     val categoryName: String,
 
-    val attemptCounter: Int,
+    var attemptCounter: Int,
 
-    val splits: List<SingleSplit>,
-)
+    var splits: List<SingleSplit>,
+) {
+    fun incrementAttemptCounter() {
+        attemptCounter ++
+    }
+}
 
 data class SingleSplit(
-    val splitName: String,
+    var splitName: String,
     
     // PB times are for the full run (cumulative), gold times are per segment
-    val pbTimeMillis: Long,
-    val goldTimeMillis: Long,
-    val pbDeltaMillis: Long? = null, // Not saved to disk
+    var pbTimeMillis: Long,
+    var goldTimeMillis: Long,
+
+    // Not saved to disk
+    @Expose var pbDeltaMillis: Long? = null,
 )
