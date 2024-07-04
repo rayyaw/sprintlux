@@ -2,6 +2,7 @@ package tech.rayyaw.sprintlux.ui
 
 import java.time.Duration
 import javax.inject.Inject
+import javafx.application.Platform
 import javafx.stage.Stage
 import javafx.scene.control.Label
 import javafx.scene.layout.Priority
@@ -19,27 +20,34 @@ class SumOfBest @Inject constructor(
     private val splitProvider: SplitProvider,
     private val logger: Logger,
 ): HBox() {
+
+    private val sobTimeLabel: Label = Label()
+
     init {
         val sobText = Label("Sum of Best Segments:")
 
         val spacer = Region()
         HBox.setHgrow(spacer, Priority.ALWAYS)
 
-        val splits = splitProvider.splitFile.value
+        updateSobLabel()
 
-        // FIXME - update dynamically
+        children.addAll(sobText, spacer, sobTimeLabel)
+    }
+
+    fun updateSobLabel() {
+        val splits = splitProvider.splitFile.value
         splits?.let {
             val sobTime = splits.splits.map {
                 it.goldTimeMillis
             }.sum()
 
-            val sobTimeLabel = Label(
-                DurationFormatter.formatDuration(
-                    Duration.ofMillis(sobTime)
-                )
+            val sobTimeText = DurationFormatter.formatDuration(
+                Duration.ofMillis(sobTime)
             )
 
-            children.addAll(sobText, spacer, sobTimeLabel)
-        }
+            Platform.runLater {
+                sobTimeLabel.text = sobTimeText
+            }
+        }       
     }
 }

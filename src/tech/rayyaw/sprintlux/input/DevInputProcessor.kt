@@ -30,12 +30,12 @@ public class DevInputProcessor @Inject constructor(
         const val KEY_PRESSED_VALUE = 1
     }
 
-    override val event = MutableStateFlow(InputState.NONE)
-
     private lateinit var inputStream: FileInputStream
     private lateinit var inputChannel: FileChannel
 
     private var shouldStopPolling: Boolean = false
+
+    private val delegates: MutableSet<InputDelegate> = mutableSetOf()
 
     // Launch the input poller on a separate thread.
     override fun startPolling() {
@@ -52,6 +52,14 @@ public class DevInputProcessor @Inject constructor(
         shouldStopPolling = true
         inputChannel.close()
         inputStream.close()
+    }
+
+    override fun registerDelegate(delegate: InputDelegate) {
+        delegates.add(delegate)
+    }
+
+    override fun deregisterDelegate(delegate: InputDelegate) {
+        delegates.remove(delegate)
     }
 
     // Run listener on /dev/input/eventX without blocking the main thread
@@ -83,9 +91,9 @@ public class DevInputProcessor @Inject constructor(
             logger.debug("Read $bytesRead raw bytes from /dev/input: $byteArray")
             logger.debug("The ${keypressType} key was pressed")
 
-            // Notify listeners
-            keypressType?.let { keypress ->
-                event.value = keypress
+            // Notify delegates
+            delegates.forEach {
+                it.onInputChanged(keypressType)
             }
         }
     }

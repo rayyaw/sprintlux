@@ -2,6 +2,7 @@ package tech.rayyaw.sprintlux
 
 import com.google.inject.Guice
 import com.google.inject.name.Named
+import java.time.Duration
 import java.time.Instant
 import javafx.application.Application
 import javafx.geometry.Insets
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.slf4j.Logger
 import tech.rayyaw.sprintlux.config.Config
+import tech.rayyaw.sprintlux.input.InputDelegate
 import tech.rayyaw.sprintlux.input.InputProcessor
 import tech.rayyaw.sprintlux.input.InputState
 import tech.rayyaw.sprintlux.split.SplitFile
@@ -28,7 +30,7 @@ import tech.rayyaw.sprintlux.ui.BigTimer
 import tech.rayyaw.sprintlux.ui.SumOfBest
 
 // TODO: Dynamic updating (ie, don't show a static screen), edit config via right click menu
-class Main: Application() {
+class Main: Application(), InputDelegate {
     // Processing engine
     @Inject lateinit var logger: Logger
     @Inject lateinit var inputProcessor: InputProcessor
@@ -42,10 +44,10 @@ class Main: Application() {
     @Inject lateinit var bigTimer: BigTimer
     @Inject lateinit var sumOfBest: SumOfBest
 
-    // Dynamic data
+    // Dynamic datasplitPr
     @Inject @Named("startTime") lateinit var startTime: MutableStateFlow<Instant?>
     var lastSplitTime:      Instant? = null
-    var currentSplit:       Int = 0
+    var currentSplit:       Int = -1
     var splitData:          MutableStateFlow<SplitFile?>
 
     init {
@@ -58,12 +60,7 @@ class Main: Application() {
     // UI methods
     override fun start(primaryStage: Stage) {
         inputProcessor.startPolling()
-
-        coroutineScope.launch {
-            inputProcessor.event.collect {
-                onInputChanged(it)
-            }
-        }
+        inputProcessor.registerDelegate(this)
 
         // FIXME - set global font, font size and color (should be configurable)
 
@@ -105,8 +102,9 @@ class Main: Application() {
     }
 
     // Callbacks and split updates
-    fun onInputChanged(newInput: InputState) {
+    override fun onInputChanged(newInput: InputState?) {
         // TODO: Process new input
+        // TODO: Handle global hotkeys
         logger.debug("Application detected input of $newInput")
         when (newInput) {
             InputState.SPLIT -> split()
@@ -118,20 +116,39 @@ class Main: Application() {
     fun split() {
         val currentTime = Instant.now()
 
-        // Handle the first split
-        if (startTime.value == null) {
-            startTime.value = currentTime
+        val splits = splitProvider.splitFile
 
-            val splits = splitProvider.splitFile            
+        // Handle the first split
+        if (currentSplit == -1) {
+            startTime.value = currentTime
+           
             splits.value?.incrementAttemptCounter()
             attemptCounter.notifyNewAttemptCount()
+            currentSplit ++
+
+            lastSplitTime = currentTime
+        } else if (currentSplit < splits.value?.splits?.size ?: -1) {
+            val splitTime = Duration.between(lastSplitTime, currentTime).toMillis()
+            
+            // Handle golds
+            // FIXME - need some way to set the split color to gold
+            val goldTime = splits.value?.splits?.get(currentSplit)?.goldTimeMillis
+            if (goldTime != null && splitTime < goldTime) {
+                splits.value?.setGoldTime(currentSplit, splitTime)
+                sumOfBest.updateSobLabel()
+                logger.info("New gold! Split time = ${splits.value?.splits?.get(currentSplit)?.goldTimeMillis} ms")
+            }
+
+            // FIXME - handle split deltas
+
+            currentSplit ++
+            lastSplitTime = currentTime
+
+            // FIXME - stop the big timer if this is the last split
+        } else {
+            // FIXME - if the current split is the last one
+            // this should reset the timer
         }
-
-        lastSplitTime = currentTime
-
-        // FIXME - handle split deltas and golds
-        // FIXME - if the current split is the last one, this should reset the timer
-
     }
 
     fun reset() {

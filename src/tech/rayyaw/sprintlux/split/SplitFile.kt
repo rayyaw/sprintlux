@@ -8,10 +8,14 @@ data class SplitFile(
 
     var attemptCounter: Int,
 
-    var splits: List<SingleSplit>,
+    var splits: MutableList<SingleSplit>,
 ) {
     fun incrementAttemptCounter() {
         attemptCounter ++
+    }
+
+    fun setGoldTime(split: Int, goldTime: Long) {
+        splits[split].goldTimeMillis = goldTime
     }
 }
 

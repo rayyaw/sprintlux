@@ -2,9 +2,9 @@ package tech.rayyaw.sprintlux.split
 
 import com.google.gson.Gson
 import com.google.inject.Singleton
-import javax.inject.Inject
 import java.io.File
 import java.io.FileWriter
+import javax.inject.Inject
 import tech.rayyaw.sprintlux.config.Config
 import kotlinx.coroutines.flow.MutableStateFlow
 

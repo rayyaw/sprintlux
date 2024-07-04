@@ -10,5 +10,7 @@ public interface InputProcessor {
     fun startPolling()
     fun stopPolling()
 
-    val event: MutableStateFlow<InputState>
+    // Delegates should get a callback when an input event is triggered
+    fun registerDelegate(delegate: InputDelegate)
+    fun deregisterDelegate(delegate: InputDelegate)
 }
