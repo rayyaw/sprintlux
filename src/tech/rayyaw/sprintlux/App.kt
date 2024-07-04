@@ -139,7 +139,8 @@ class Main: Application(), InputDelegate {
                 logger.info("New gold! Split time = ${splits.value?.splits?.get(currentSplit)?.goldTimeMillis} ms")
             }
 
-            // FIXME - handle split deltas
+            // Handle split deltas
+            splitBody.notifySplit(currentSplit, currentTime)
 
             currentSplit ++
             lastSplitTime = currentTime
@@ -148,6 +149,7 @@ class Main: Application(), InputDelegate {
         } else {
             // FIXME - if the current split is the last one
             // this should reset the timer
+            // and update all splits to PB if needed
         }
     }
 

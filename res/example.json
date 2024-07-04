@@ -1,17 +1,19 @@
 {
   "gameName": "Super Mario Flash",
   "categoryName": "Any% Glitchless",
-  "attemptCounter": 27701,
+  "attemptCounter": 27702,
   "splits": [
     {
       "splitName": "1",
       "pbTimeMillis": 29800,
-      "goldTimeMillis": 472
+      "goldTimeMillis": 472,
+      "pbDeltaMillis": -28485
     },
     {
       "splitName": "2",
       "pbTimeMillis": 74350,
-      "goldTimeMillis": 42160
+      "goldTimeMillis": 3425,
+      "pbDeltaMillis": -69610
     },
     {
       "splitName": "3",

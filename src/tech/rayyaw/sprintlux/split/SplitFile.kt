@@ -17,6 +17,10 @@ data class SplitFile(
     fun setGoldTime(split: Int, goldTime: Long) {
         splits[split].goldTimeMillis = goldTime
     }
+
+    fun setDelta(split: Int, delta: Long?) {
+        splits[split].pbDeltaMillis = delta
+    }
 }
 
 data class SingleSplit(
